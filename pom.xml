@@ -7,16 +7,7 @@
     <version>1.0.0</version>
 
     <modules>
-        <module>util</module>
-        <module>protocol</module>
         <module>client</module>
-        <module>redisgen</module>
-        <module>benchmark</module>
-        <module>netty</module>
-        <module>netty-client</module>
-        <module>netty4</module>
-        <module>netty4-client</module>
-        <module>netty4-server</module>
     </modules>
     <packaging>pom</packaging>
 
