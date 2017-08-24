@@ -59,8 +59,7 @@ public class RedisURI {
         }
 
         public RedisURI build() {
-            RedisURI redisURI = new RedisURI(host, port, password, unit);
-            return redisURI;
+            return new RedisURI(host, port, password, unit);
         }
     }
 
