@@ -14,5 +14,5 @@ public interface RedisSyncCommands {
 
     String info();
 
-    void set(String test, Object str);
+    void set(String test, String str);
 }
