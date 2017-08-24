@@ -1,7 +1,7 @@
 package com.redis.bio.client;
 
 /**
- * 命令api
+ * api
  *
  * @author zhangxin
  *         Created on 17/8/18.
@@ -13,4 +13,6 @@ public interface RedisSyncCommands {
     String auth(String password);
 
     String info();
+
+    void set(String test, Object str);
 }

@@ -38,11 +38,7 @@ public class RedisConnection {
         try {
             commandHandler.write(command);
 
-            Reply reply = commandHandler.read();
-
-            System.out.println(reply.data());
-
-            return reply;
+            return commandHandler.read();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -3,7 +3,6 @@ package com.redis.bio.client;
 import com.redis.bio.client.command.Command;
 import com.redis.bio.client.reply.*;
 
-import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +29,7 @@ public class CommandHandler {
     }
 
     public Reply read() throws IOException {
-        InputStream inputStream = redisConnection.inputStream;
+        InputStream inputStream = redisConnection.getInputStream();
         int code = inputStream.read();
         System.out.println((char) code);
         if (code == -1) {
@@ -38,25 +37,25 @@ public class CommandHandler {
         }
         switch (code) {
             case StatusReply.MARKER: {
-                return new StatusReply(new DataInputStream(inputStream).readLine());
+                break;
             }
             case ErrorReply.MARKER: {
-                return new ErrorReply(new DataInputStream(inputStream).readLine());
+                break;
             }
             case IntegerReply.MARKER: {
-                return null;
+                break;
             }
             case BulkReply.MARKER: {
-                System.out.println("reply $");
-                return new BulkReply(readBytes(inputStream));
+                System.out.println((char) BulkReply.MARKER);
+                BulkReply bulkReply = new BulkReply(CommandHandler.readBytes(inputStream));
+                System.out.println(bulkReply.asAsciiString());
+                return bulkReply;
             }
-//            case MultiBulkReply.MARKER: {
-//                return new MultiBulkReply(inputStream);
-//            }
             default: {
                 throw new IOException("Unexpected character in stream: " + code);
             }
         }
+        return null;
     }
 
 

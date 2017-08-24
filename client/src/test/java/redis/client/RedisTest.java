@@ -23,6 +23,8 @@ public class RedisTest {
 
         RedisSyncCommands sync = client.connect().sync();
 
+        sync.set("test","str");
+
         String test = sync.get("test");
 
     }
@@ -52,7 +54,6 @@ public class RedisTest {
                 break;
             }
             case BulkReply.MARKER: {
-                System.out.println("2");
                 BulkReply bulkReply = new BulkReply(CommandHandler.readBytes(socket.getInputStream()));
                 System.out.println(bulkReply.asAsciiString());
                 break;
