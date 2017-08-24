@@ -27,6 +27,8 @@ public class RedisTest {
 
         String test = sync.get("test");
 
+        System.out.println(test);
+
     }
 
     @Test

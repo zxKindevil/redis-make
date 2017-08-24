@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,7 +13,7 @@ import java.util.List;
 public class Command {
     private final CommandKeyword type;
 
-    protected List<Object> args = Lists.newArrayList();
+    private List<Object> args = Lists.newArrayList();
 
     public Command(CommandKeyword type) {
         this.type = type;
@@ -61,20 +60,11 @@ public class Command {
         buffer.put(EncodeDic.CRLF);
     }
 
-    public static void main(String[] args) {
-//        byte[] bytes = new byte[10];
-//        ByteBuffer buffer = ByteBuffer.allocate(100);
-//        buffer.putChar('x');
-//        ByteBuffer x = buffer.get(bytes);
-//        System.out.println(Arrays.toString(bytes));
-//
-//        System.out.println((int) ARGS_PREFIX);
-
-        Command info = new Command(CommandType.INFO);
-        System.out.println(info.toBytes().length);
-
-        System.out.println(Arrays.toString(info.toBytes()));
-        System.out.println(new String());
+    public List<Object> getArgs() {
+        return args;
     }
 
+    public void setArgs(List<Object> args) {
+        this.args = args;
+    }
 }

@@ -31,6 +31,15 @@ public class RedisSyncCommandsImpl implements RedisSyncCommands {
 
         Reply reply = commandHandler.getRedisConnection().execute(info);
 
+        Object data = reply.data();
         return "";
+    }
+
+    @Override
+    public void set(String test, String str) {
+        Command command = new Command(CommandType.SET);
+        command.getArgs().add(str);
+
+        Reply reply = commandHandler.getRedisConnection().execute(command);
     }
 }
