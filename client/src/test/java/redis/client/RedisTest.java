@@ -3,6 +3,8 @@ package redis.client;
 import com.redis.bio.client.RedisClient;
 import com.redis.bio.client.RedisSyncCommands;
 import com.redis.bio.client.RedisURI;
+import com.redis.bio.client.command.Command;
+import com.redis.bio.client.command.CommandType;
 import com.redis.bio.client.command.EncodeDic;
 import org.junit.Test;
 
@@ -22,7 +24,6 @@ public class RedisTest {
 
         String test = sync.get("test");
 
-
     }
 
     @Test
@@ -30,17 +31,29 @@ public class RedisTest {
         Socket socket = new Socket();
         socket.connect(new InetSocketAddress("10.32.64.19", 6379));
 
-        byte[] bytes = "*1\r\n$4\r\ninfo\r\n".getBytes();
+        byte[] bytes = "*1\r\n$4\r\nINFO\r\n".getBytes();
         socket.getOutputStream().write(bytes);
 
 
         System.out.println(Arrays.toString(bytes));
 
 
-//        while (socket.getInputStream().read() != -1) {
-//            System.out.println(socket.getInputStream().read());
-//        }
+        while (socket.getInputStream().read() != -1) {
+            System.out.println(socket.getInputStream().read());
+        }
 
+    }
+
+    @Test
+    public void toBytes() {
+        Command command = new Command(CommandType.INFO);
+        byte[] bytes = command.toBytes();
+        System.out.println(Arrays.toString(bytes));
+
+
+        System.out.println(Arrays.toString("*1\r\n$4\r\nINFO\r\n".getBytes()));
+
+        System.out.println(Arrays.toString("INFO".getBytes()));
     }
 
     @Test

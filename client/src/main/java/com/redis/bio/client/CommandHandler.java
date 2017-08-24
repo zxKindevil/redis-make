@@ -4,6 +4,7 @@ import com.redis.bio.client.command.Command;
 import com.redis.bio.client.reply.*;
 
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * @author zhangxin
@@ -18,7 +19,7 @@ public class CommandHandler {
 
     public void write(Command command) throws IOException {
         byte[] toBytes = command.toBytes();
-        System.out.println(new String(toBytes));
+        System.out.println(Arrays.toString(toBytes));
         redisConnection.outputStream.write(toBytes);
     }
 

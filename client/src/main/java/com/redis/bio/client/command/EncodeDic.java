@@ -7,12 +7,14 @@ import java.nio.ByteBuffer;
  *         Created on 17/8/22.
  */
 public class EncodeDic {
-    public static final byte A = '*';
-    public static final byte[] NEG_ONE = convert(-1, false);
-    public static final byte[] NEG_ONE_WITH_CRLF = convert(-1, true);
+    public static final byte ARGS_PREFIX = '*';
+    public static final byte BYTES_PREFIX = '$';
     public static final byte LF = '\n';
     public static final byte CR = '\r';
     public static byte[] CRLF = new byte[]{CR, LF};
+    public static final byte[] EMPTY_BYTES = new byte[0];
+    public static final byte[] NEG_ONE = convert(-1, false);
+    public static final byte[] NEG_ONE_WITH_CRLF = convert(-1, true);
 
     // Cache 256 number conversions. That should cover a huge
     // percentage of numbers passed over the wire.

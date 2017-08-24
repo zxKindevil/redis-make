@@ -78,7 +78,7 @@ public enum CommandType implements CommandKeyword {
     public final byte[] bytes;
 
     private CommandType() {
-        bytes = name().getBytes(Charsets.US_ASCII);
+        bytes = name().getBytes();
     }
 
     @Override

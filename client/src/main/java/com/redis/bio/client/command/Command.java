@@ -12,11 +12,6 @@ import java.util.List;
  *         Created on 17/8/18.
  */
 public class Command {
-    public static final char ARGS_PREFIX = '*';
-    public static final char BYTES_PREFIX = '$';
-    public static final byte[] CRLF = "\r\n".getBytes();
-    public static final byte[] EMPTY_BYTES = new byte[0];
-
     private final CommandKeyword type;
 
     protected List<Object> args = Lists.newArrayList();
@@ -31,12 +26,13 @@ public class Command {
 
     private byte[] encode() {
         int argLength = args == null ? 0 : args.size();
-
+        ++argLength;
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
         //*?
-        buffer.putChar(ARGS_PREFIX);
-        buffer.put(EncodeDic.numToBytes(argLength + 1));
+        buffer.put(EncodeDic.ARGS_PREFIX);
+        buffer.put(EncodeDic.numToBytes(argLength));
+        buffer.put(EncodeDic.CRLF);
 
         //$?
         this.writeObject(buffer, type.getBytes());
@@ -52,17 +48,17 @@ public class Command {
     private void writeObject(ByteBuffer buffer, Object object) {
         byte[] argument;
         if (object == null) {
-            argument = EMPTY_BYTES;
+            argument = EncodeDic.EMPTY_BYTES;
         } else if (object instanceof byte[]) {
             argument = (byte[]) object;
         } else {
             argument = object.toString().getBytes(Charsets.UTF_8);
         }
 
-        buffer.putChar(BYTES_PREFIX);
+        buffer.put(EncodeDic.BYTES_PREFIX);
         buffer.put(EncodeDic.numToBytes(argument.length, true));
         buffer.put(argument);
-        buffer.put(CRLF);
+        buffer.put(EncodeDic.CRLF);
     }
 
     public static void main(String[] args) {
