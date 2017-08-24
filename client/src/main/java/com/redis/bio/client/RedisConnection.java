@@ -3,7 +3,10 @@ package com.redis.bio.client;
 import com.redis.bio.client.command.Command;
 import com.redis.bio.client.reply.Reply;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 /**
@@ -15,7 +18,7 @@ public class RedisConnection {
     public static final char CR = '\r';
     public static final char LF = '\n';
     public static final char ZERO = '0';
-    protected BufferedInputStream inputStream;
+    protected InputStream inputStream;
     protected OutputStream outputStream;
     private final Socket socket;
     private RedisSyncCommands redisSyncCommands;
@@ -23,10 +26,11 @@ public class RedisConnection {
 
     public RedisConnection(Socket socket) throws IOException {
         this.socket = socket;
-        this.inputStream = new BufferedInputStream(socket.getInputStream());
-        this.outputStream = new BufferedOutputStream(socket.getOutputStream());
-        this.redisSyncCommands = new RedisSyncCommandsImpl(this);
+        this.inputStream = socket.getInputStream();
+        this.outputStream = socket.getOutputStream();
         this.commandHandler = new CommandHandler(this);
+
+        this.redisSyncCommands = new RedisSyncCommandsImpl(commandHandler);
     }
 
     public synchronized Reply execute(Command command) {
@@ -34,16 +38,13 @@ public class RedisConnection {
         try {
             commandHandler.write(command);
 
-
             Reply reply = commandHandler.read();
 
             System.out.println(reply.data());
 
             return reply;
         } catch (IOException e) {
-            //TODO
             e.printStackTrace();
-
             return null;
         }
     }
@@ -123,5 +124,25 @@ public class RedisConnection {
 
     public RedisSyncCommands sync() {
         return redisSyncCommands;
+    }
+
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

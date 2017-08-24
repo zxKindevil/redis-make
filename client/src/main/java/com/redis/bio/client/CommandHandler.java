@@ -3,7 +3,10 @@ package com.redis.bio.client;
 import com.redis.bio.client.command.Command;
 import com.redis.bio.client.reply.*;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 /**
@@ -20,12 +23,16 @@ public class CommandHandler {
     public void write(Command command) throws IOException {
         byte[] toBytes = command.toBytes();
         System.out.println(Arrays.toString(toBytes));
+
+        byte[] bytes = "*1\r\n$4\r\nINFO\r\n".getBytes();
+        System.out.println(Arrays.toString(bytes));
         redisConnection.outputStream.write(toBytes);
     }
 
     public Reply read() throws IOException {
-        BufferedInputStream inputStream = redisConnection.inputStream;
+        InputStream inputStream = redisConnection.inputStream;
         int code = inputStream.read();
+        System.out.println((char) code);
         if (code == -1) {
             throw new EOFException();
         }
@@ -40,6 +47,7 @@ public class CommandHandler {
                 return null;
             }
             case BulkReply.MARKER: {
+                System.out.println("reply $");
                 return new BulkReply(readBytes(inputStream));
             }
 //            case MultiBulkReply.MARKER: {
@@ -50,6 +58,7 @@ public class CommandHandler {
             }
         }
     }
+
 
     public static byte[] readBytes(InputStream is) throws IOException {
         long size = readLong(is);
@@ -109,4 +118,12 @@ public class CommandHandler {
         } while (true);
     }
 
+
+    public RedisConnection getRedisConnection() {
+        return redisConnection;
+    }
+
+    public void setRedisConnection(RedisConnection redisConnection) {
+        this.redisConnection = redisConnection;
+    }
 }

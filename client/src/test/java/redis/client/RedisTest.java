@@ -1,17 +1,18 @@
 package redis.client;
 
+import com.redis.bio.client.CommandHandler;
 import com.redis.bio.client.RedisClient;
 import com.redis.bio.client.RedisSyncCommands;
 import com.redis.bio.client.RedisURI;
-import com.redis.bio.client.command.Command;
-import com.redis.bio.client.command.CommandType;
-import com.redis.bio.client.command.EncodeDic;
+import com.redis.bio.client.reply.BulkReply;
+import com.redis.bio.client.reply.ErrorReply;
+import com.redis.bio.client.reply.IntegerReply;
+import com.redis.bio.client.reply.StatusReply;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class RedisTest {
@@ -32,38 +33,34 @@ public class RedisTest {
         socket.connect(new InetSocketAddress("10.32.64.19", 6379));
 
         byte[] bytes = "*1\r\n$4\r\nINFO\r\n".getBytes();
+        System.out.println(Arrays.toString(bytes));
         socket.getOutputStream().write(bytes);
 
+        int code = socket.getInputStream().read();
 
-        System.out.println(Arrays.toString(bytes));
+        System.out.println((char) code);
 
-
-        while (socket.getInputStream().read() != -1) {
-            System.out.println(socket.getInputStream().read());
+        switch (code) {
+            case StatusReply.MARKER: {
+                System.out.println("1");
+                break;
+            }
+            case ErrorReply.MARKER: {
+                break;
+            }
+            case IntegerReply.MARKER: {
+                break;
+            }
+            case BulkReply.MARKER: {
+                System.out.println("2");
+                BulkReply bulkReply = new BulkReply(CommandHandler.readBytes(socket.getInputStream()));
+                System.out.println(bulkReply.asAsciiString());
+                break;
+            }
+            default: {
+                throw new IOException("Unexpected character in stream: " + code);
+            }
         }
-
     }
 
-    @Test
-    public void toBytes() {
-        Command command = new Command(CommandType.INFO);
-        byte[] bytes = command.toBytes();
-        System.out.println(Arrays.toString(bytes));
-
-
-        System.out.println(Arrays.toString("*1\r\n$4\r\nINFO\r\n".getBytes()));
-
-        System.out.println(Arrays.toString("INFO".getBytes()));
-    }
-
-    @Test
-    public void b() {
-        ByteBuffer buffer = ByteBuffer.allocate(100);
-
-        buffer.put("*".getBytes());
-        buffer.put("1".getBytes());
-
-        byte[] aByte = EncodeDic.getByte(buffer);
-        System.out.println(Arrays.toString(aByte));
-    }
 }

@@ -26,7 +26,6 @@ public class RedisClient {
             System.out.println("connected suc");
             this.connection = new RedisConnection(socket);
         } catch (IOException e) {
-            //TODO
             e.printStackTrace();
         }
 
